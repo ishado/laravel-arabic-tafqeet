@@ -98,26 +98,3 @@ trait Digit
 
 
 
-//
-//    protected  function  getNameOfHala($number)
-//    {
-//        $number = $number * 1;
-//        if($number==0)
-//        {
-//            return '';
-//        }
-//
-//
-//        if ($number<=2)
-//        {
-//            return $this->single_after_comma;
-//        }
-//
-//
-//        if($number>=9)
-//            return $this->single_after_comma;
-//
-//
-//
-//        return $this->multi_after_comma;
-//    }

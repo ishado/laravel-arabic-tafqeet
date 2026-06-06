@@ -133,7 +133,7 @@
 		/*
 		 *  parsed number
 		 * */
-		public $after_comma_sum;
+		public $after_comma_sum = '';
 
 		/*
 		 * array of numbers after split process

@@ -91,7 +91,6 @@ trait Calculators
         if($arr[1]!=0)
             return $this->hundreds[$arr[0]] . $this->config['connection_tool']  . $this->classB([$arr[1],$arr[2]]);
 
-            //return $this->hundreds[$arr[0]] . $this->config['connection_tool'] . $this->classA([$arr[2]]);
     }
 
     public function classD($arr,$len = 4)
@@ -161,8 +160,6 @@ trait Calculators
 
             if($arr[1] == 0)
             {
-                //dd($arr[1]);
-                //dd($arr[2]);
                 $thousands =  $this->tens[$arr[2]] ;
             }
 
@@ -204,7 +201,6 @@ trait Calculators
                 }
                 else
                 {
-//                    $thousands_lang = $this->thousands[1199];
                     if($arr[1]==0 and $arr[2]>=1 and $arr[1]<=10)
                         $thousands_lang = $this->thousands[1];
                     elseif($arr[1]>=1 and $arr[2]>=1 and $arr[1]<=9)
@@ -228,12 +224,9 @@ trait Calculators
         return $thousands;
     }
 
-    public function classG($arr,$len = 7) //1 000 000
+    public function classG($arr,$len = 7)
     {
-        //dd($arr,$len);
         $classC = [$arr[4],$arr[5],$arr[6]];
-        //$classC = [$arr[1],$arr[2],$arr[3]];
-        //$classE = [$arr[1],$arr[2],$arr[3],$arr[4],$arr[5],$arr[6]];
 
         if($arr[0]<=2)
             $million = $this->millions[$arr[0]] ;
@@ -247,9 +240,7 @@ trait Calculators
 
     public function classH($arr,$len = 8)
     {
-        //dd($arr,$len);
         $classF = [$arr[2],$arr[3],$arr[4],$arr[5],$arr[6],$arr[7]];
-        //$classC = [$arr[1],$arr[2],$arr[3]];
 
         if($arr[0] != 0)
         {
@@ -303,19 +294,6 @@ trait Calculators
 
             $million.=' ' . $this->millions[39];
         }
-//        if(in_array($arr[1],[2]))
-//            $million =  $this->others[$arr[1]]  . $this->config['connection_tool'] . $this->tens[$arr[0]] ;
-//        else
-//            $million =  $this->ones[$arr[1]]  . $this->config['connection_tool'] . $this->tens[$arr[0]] ;
-
-        //$million =  $this->ones[$arr[1]]  . $this->config['connection_tool'] . $this->tens[$arr[0]] ;
-
-//        if($arr[1] == 0)
-//        {
-//            $million =  $this->tens[$arr[0]] ;
-//        }
-
-        //$million.=' ' . $this->millions[1199];
 
         return $million . $this->config['connection_tool'] . $this->classC($classF);
     }
