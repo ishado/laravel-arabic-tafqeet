@@ -43,6 +43,8 @@ Tafqeet::inArabic(100, 'usd');
 // "فقط مائة دولار لا غير"
 ```
 
+> **Arabic grammar note:** The currency name changes form automatically based on the number — *marfūʿ* (رفع, e.g. "ريال") for 1, 2, 11, 12… and *manṣūb* (نصب, e.g. "ريالاً") for 3−10, 100…. This is handled implicitly by the package with no extra configuration needed.
+
 ### Convert pure numbers (no currency)
 
 ```php
@@ -76,7 +78,13 @@ Tafqeet::inArabicFormatted(100, 'sar', 'المبلغ', null);
 // Custom both
 Tafqeet::inArabicFormatted(100, 'sar', 'المبلغ', 'تماماً');
 // "المبلغ مائة ريال تماماً"
+
+// Keep the default "فقط" prefix, customize only the suffix
+Tafqeet::inArabicFormatted(100, 'sar', '{default}', 'تماماً');
+// "فقط مائة ريال تماماً"
 ```
+
+> `{default}` preserves the built-in prefix/suffix, while `null` omits it entirely.
 
 ### Custom currencies
 
@@ -87,6 +95,13 @@ Config::addCurrency('try', 'ليرة', 'ليرة', 'قرش', 'قروش');
 
 Tafqeet::inArabicCurrency(100, 'try');
 // "فقط مائة ليرة لا غير"
+```
+
+### List supported currencies
+
+```php
+Config::supportedCurrencies();
+// ['sar', 'egp', 'dzd', 'aed', 'kwd', 'bhd', 'iqd', 'lbp', 'yer', 'jod', 'usd', 'sdg', 'mad', 'tnd', 'qar', 'omr']
 ```
 
 ---
@@ -136,6 +151,16 @@ Tafqeet::inArabicNumber(999999999999);
 - Laravel 5.5 through 11.x are supported.
 
 For the full changelog, see [CHANGELOG.md](CHANGELOG.md).
+
+---
+
+## Testing
+
+```bash
+./vendor/bin/phpunit
+```
+
+The package includes 96 tests covering all 16 currencies, edge cases, Arabic grammar rules, and the full public API.
 
 ---
 
