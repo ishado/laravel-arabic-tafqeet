@@ -43,12 +43,12 @@ laravel-arabic-tafqeet/
 
 | التبعية | النوع | ملاحظات |
 |----------|------|---------|
-| `ext-intl` (`\NumberFormatter`) | مطلوبة ضمنياً | **غير مصرح بها في composer.json** |
-| Laravel Framework | مطلوب ضمنياً | **لا يوجد `require` في composer.json** |
-| `Illuminate\Support\ServiceProvider` | تبعية Laravel | مستخدمة في ServiceProvider |
-| `Illuminate\Foundation\AliasLoader` | تبعية Laravel | لتسجيل الـ Facade |
+| `ext-intl` (`\NumberFormatter`) | مطلوبة صراحةً | ✅ مصرح بها في composer.json — ICU 77.1 مختبر |
+| Laravel Framework (`illuminate/support`) | مطلوب صراحةً | ✅ `^7.0 \|\| ^8.0 \|\| ^9.0 \|\| ^10.0 \|\| ^11.0` |
+| `Illuminate\Support\ServiceProvider` | مضمنة في illuminate/support | ✅ لا حاجة لـ illuminate/foundation |
+| `Illuminate\Foundation\AliasLoader` | اختيارية | ✅ `class_exists` guard — `extra.laravel.aliases` يتولى Laravel 11+ |
 
-> **تحذير:** `composer.json` لا يحتوي على قسم `require` إطلاقاً. هذا يعني أن الحزمة لا تعلن عن أي تبعيات رسمياً، مما قد يؤدي إلى كسر صامت عند التثبيت في بيئات لا يتوفر فيها Laravel أو `ext-intl`.
+> **ملاحظة ICU:** مخرجات `NumberFormatter::SPELLOUT` بالعربية تعتمد على إصدار ICU المثبت على الخادم. الإصدار المختبر: **ICU 77.1** (PHP 8.4.19). قد تختلف المخرجات قليلاً بين إصدارات ICU المختلفة (مثلاً `"إثنان"` vs `"اثنان"`).
 
 ### قائمة العملات المدعومة
 
@@ -242,6 +242,19 @@ Tafqeet (God Class)
 ---
 
 ## [CHANGELOG]
+
+### المرحلة 3 — 2026-06-07 ✅ مكتملة (تحديث التبعيات وتوافق Laravel)
+| # | التعديل | الملف | الحالة |
+|---|---------|------|--------|
+| 3.1 | إضافة `extra.laravel.aliases` لتسجيل الـ Facade آلياً | `composer.json` | ✅ |
+| 3.2 | تحديث ServiceProvider: `class_exists` guard قبل `AliasLoader` | `src/LaravelArabicTafqeetServiceProvider.php` | ✅ |
+| 3.3 | التحقق من `composer.json` سليم 100% | `composer.json` | ✅ |
+| 3.4 | توثيق إصدار ICU و `NumberFormatter` | `PROJECT_MAP.md` | ✅ |
+
+**نتائج الاختبارات:** 76/76 ✅  
+**توافق Laravel:** 5.5+ → 11.x (auto-discovery + graceful fallback)  
+**إصدار ICU المختبر:** 77.1 (PHP 8.4.19)  
+**ملاحظة:** مخرجات `NumberFormatter::SPELLOUT` تعتمد على إصدار ICU وقد تختلف بين الخوادم.
 
 ### المرحلة 2 — 2026-06-07 ✅ مكتملة (إعادة هيكلة داخلية آمنة)
 | # | التعديل | الملف | الحالة |

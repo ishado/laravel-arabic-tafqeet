@@ -38,7 +38,10 @@
     "laravel": {
       "providers": [
         "Alkoumi\\LaravelArabicTafqeet\\LaravelArabicTafqeetServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "Tafqeet": "Alkoumi\\LaravelArabicTafqeet\\Tafqeet"
+      }
     }
   },
   "minimum-stability": "dev",

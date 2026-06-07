@@ -3,27 +3,26 @@
 namespace Alkoumi\LaravelArabicTafqeet;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\AliasLoader;
-
 
 class LaravelArabicTafqeetServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        AliasLoader::getInstance()->alias("Tafqeet", Tafqeet::class);
+        if (class_exists(\Illuminate\Foundation\AliasLoader::class)) {
+            \Illuminate\Foundation\AliasLoader::getInstance()->alias('Tafqeet', Tafqeet::class);
+        }
+
+        // For Laravel 11+ the alias is registered via extra.laravel.aliases
+        // in composer.json, so this block is a backward-compat fallback.
     }
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
