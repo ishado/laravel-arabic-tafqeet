@@ -18,51 +18,84 @@
 
 		protected array $config = [];
 
-		/** Parsed number (the input converted to string). */
 		protected string $after_comma_sum = '';
 
-		/** Array of numbers after the split process. */
 		private string $parsed_number;
 
-		/** All number parts array. */
 		private array $parsed_number_array = [];
 		private int $all_numbers_len = 0;
 
-		/** @var array|null Unused — kept for compatibility. */
 		private $all_numbers_array;
 
-		/** Before-comma digits array and its length. */
 		private array $before_comma_array = [];
 		private int $before_comma_len = 0;
 
-		/** After-comma digits array and its length. */
 		private array $after_comma_array = [];
 		private int $after_comma_len = 0;
 
-		/** Result strings for before and after comma. */
 		protected string $result_before_comma = '';
 		protected string $result_after_comma = '';
 
 		private bool $is_main1_currency = true;
 
-		/**
-		 * Convert an amount to its Arabic textual representation.
-		 *
-		 * @param int|float $amount   The numeric amount.
-		 * @param string    $currency Currency code (default 'sar').
-		 * @return string   The Arabic tafqeet text.
-		 */
+		// ─────────────────── Public API ───────────────────────────
+
 		public static function inArabic(int|float $amount = 0, string $currency = 'sar'): string
+		{
+			return static::inArabicCurrency($amount, $currency);
+		}
+
+		public static function inArabicNumber(int|float $number = 0): string
+		{
+			return self::getFormatter()->format($number);
+		}
+
+		public static function inArabicCurrency(int|float $amount = 0, string $currency = 'sar'): string
 		{
 			return (new self)->setAmount($amount)->initValidation()->prepare()->run()->result($currency);
 		}
 
-		/**
-		 * Assemble the final result string from internal state.
-		 */
+		public static function inArabicFormatted(
+			int|float $amount = 0,
+			string $currency = 'sar',
+			?string $starter = '{default}',
+			?string $end = '{default}'
+		): string {
+			$instance = (new self)
+				->setAmount($amount)
+				->initValidation()
+				->prepare()
+				->run();
+
+			return $instance->resultWithOptions($currency, $starter, $end);
+		}
+
+		// ─────────────────── Internal pipeline ────────────────────
+
 		public function result(string $currency = 'sar'): string
 		{
-			$result = $this->config['starter'] . ' ';
+			return $this->buildResult(
+				$currency,
+				$this->config['starter'],
+				$this->config['end']
+			);
+		}
+
+		public function resultWithOptions(string $currency, ?string $starter, ?string $end): string
+		{
+			$s = $starter === '{default}' ? $this->config['starter'] : ($starter ?? '');
+			$e = $end === '{default}' ? $this->config['end'] : ($end ?? '');
+
+			return $this->buildResult($currency, $s, $e);
+		}
+
+		private function buildResult(string $currency, string $starter, string $end): string
+		{
+			$result = '';
+
+			if ($starter !== '') {
+				$result .= $starter . ' ';
+			}
 
 			if ($this->is_main1_currency) {
 				$result .= $this->result_before_comma . ' ' . $this->config['currencies'][$currency]['main1'];
@@ -80,9 +113,11 @@
 				}
 			}
 
-			$result .= ' ' . $this->config['end'];
+			if ($end !== '') {
+				$result .= ' ' . $end;
+			}
 
-			return str_replace('  ', ' ', $result);
+			return str_replace('  ', ' ', trim($result));
 		}
 
 		public function run(): self

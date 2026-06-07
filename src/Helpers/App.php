@@ -8,6 +8,18 @@ trait App
 {
     private static ?\NumberFormatter $formatter = null;
 
+    /**
+     * Return the shared NumberFormatter instance (lazy-initialised).
+     */
+    protected static function getFormatter(): \NumberFormatter
+    {
+        if (self::$formatter === null) {
+            self::$formatter = new \NumberFormatter("ar", \NumberFormatter::SPELLOUT);
+        }
+
+        return self::$formatter;
+    }
+
     public function runBeforeComma(): string
     {
         $number = '';
@@ -15,11 +27,7 @@ trait App
             $number .= $this->before_comma_array[$i];
         }
 
-        if (self::$formatter === null) {
-            self::$formatter = new \NumberFormatter("ar", \NumberFormatter::SPELLOUT);
-        }
-
-        return self::$formatter->format($number);
+        return self::getFormatter()->format($number);
     }
 
     public function runAfterComma(): string
