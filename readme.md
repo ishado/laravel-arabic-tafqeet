@@ -1,53 +1,142 @@
 # Laravel Arabic Tafqeet  تفقيط الأرقام باللغة العربية
+
 [![License](https://poser.pugx.org/alkoumi/laravel-arabic-tafqeet/license)](https://packagist.org/packages/alkoumi/laravel-arabic-tafqeet)
 [![Latest Stable Version](https://poser.pugx.org/alkoumi/laravel-arabic-tafqeet/v/stable)](https://packagist.org/packages/alkoumi/laravel-arabic-tafqeet)
 [![Total Downloads](https://poser.pugx.org/alkoumi/laravel-arabic-tafqeet/downloads)](https://packagist.org/packages/alkoumi/laravel-arabic-tafqeet)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alkoumi/laravel-arabic-tafqeet/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alkoumi/laravel-arabic-tafqeet/?branch=master)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/alkoumi/laravel-arabic-tafqeet/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
-## Recommendations!!! 🥰 Please try `alkoumi/laravel-arabic-numbers` 🤩 instead.
-Laravel package to translate money numbers to our Amazing 💝 Arabic language TAFQEET . to look like [فقط تسعمائة ألف ريال و أربعة و ثلاثون هللة لاغير]
-## [Otherwise]
-## Installation to All Laravel Versions 🥳
 
-You can install the package via composer:
+Convert monetary amounts and pure numbers into their Arabic textual form (Tafqeet / تفقيط).
 
-	composer require alkoumi/laravel-arabic-tafqeet
+## Requirements
 
-The service provider will automatically get registered. Or you may manually add the service provider in your `config/app.php` file:
+- PHP >= 8.0
+- `ext-intl` (Internationalization extension)
+- Laravel >= 7.0 (or `illuminate/support`)
 
-    'providers' => [
-        // ...
-        Alkoumi\LaravelArabicTafqeet\LaravelArabicTafqeetServiceProvider::class,
-    ];
+## Installation
+
+```bash
+composer require alkoumi/laravel-arabic-tafqeet
+```
+
+The package uses Laravel auto-discovery. No manual registration is needed.
+
+---
 
 ## Usage
-![Tafqeet](imags/tafqeet.png)
 
-Simply pass amount as `Number` to the method `Tafqeet::inArabic($amount,'usd')` 
-
-the default currency is SAR you can change it by pass the currency with the $amount `Tafqeet::inArabic($amount,'usd')`
- 
-supporing most of arabic currencies same => `sar` , `egp` , `kwd` extra... 
-
+### Convert amounts with currency
 
 ```php
+use Alkoumi\LaravelArabicTafqeet\Tafqeet;
 
-        use Alkoumi\LaravelArabicTafqeet\Tafqeet;
+// Default currency: SAR
+Tafqeet::inArabic(3150.9);
+// "فقط ثلاثة آلاف ومائة وخمسون ريال وتسعة هللات لا غير"
+// (nine halalas because 3150.90 → the decimal part is 90)
 
+// Egyptian Pounds
+Tafqeet::inArabic(3150.9, 'egp');
+// "فقط ثلاثة آلاف ومائة وخمسون جنيه وتسعة قروش لا غير"
 
-        // Default currency is sar
-	$amount = App\cheque::first()->money;
-	$tafqeetInArabic = Tafqeet::inArabic($amount);
-        // Result => "فقط تسعمائة ألف ريال و أربعة و ثلاثون هللة لاغير"
+// US Dollars
+Tafqeet::inArabic(100, 'usd');
+// "فقط مائة دولار لا غير"
 ```
+
+### Convert pure numbers (no currency)
 
 ```php
-        use Alkoumi\LaravelArabicTafqeet\Tafqeet;
+Tafqeet::inArabicNumber(1234);
+// "ألف ومائتان وأربعة وثلاثون"
 
-
-        // change currency 
-	$amount = App\cheque::first()->money;
-	$tafqeetInArabic = Tafqeet::inArabic($amount,'egp');
-        // Result => "فقط تسعمائة ألف جنيه و أربعة و ثلاثون قرش لاغير"
+Tafqeet::inArabicNumber(0);
+// "صفر"
 ```
-#### Give Me 💗 Cup of ☕️ Coffee here https://patreon.com/mohammadelkoumi
+
+### Explicit currency method
+
+```php
+Tafqeet::inArabicCurrency(500, 'sar');
+// "فقط خمسمائة ريال لا غير"
+```
+
+### Flexible formatting
+
+Control the prefix and suffix bookend words:
+
+```php
+// Omit "فقط" and "لا غير"
+Tafqeet::inArabicFormatted(100, 'sar', null, null);
+// "مائة ريال"
+
+// Custom prefix only
+Tafqeet::inArabicFormatted(100, 'sar', 'المبلغ', null);
+// "المبلغ مائة ريال"
+
+// Custom both
+Tafqeet::inArabicFormatted(100, 'sar', 'المبلغ', 'تماماً');
+// "المبلغ مائة ريال تماماً"
+```
+
+### Custom currencies
+
+```php
+use Alkoumi\LaravelArabicTafqeet\Config;
+
+Config::addCurrency('try', 'ليرة', 'ليرة', 'قرش', 'قروش');
+
+Tafqeet::inArabicCurrency(100, 'try');
+// "فقط مائة ليرة لا غير"
+```
+
+---
+
+## Supported Currencies
+
+| Code | Currency | Major Unit | Minor Unit |
+|------|----------|------------|------------|
+| `sar` | Saudi Riyal | ريال | هللة / هللات |
+| `egp` | Egyptian Pound | جنيه / جنيهًا | قرش / قروش |
+| `dzd` | Algerian Dinar | دينار / دينارًا | سنتيم / سنتيمات |
+| `aed` | UAE Dirham | درهم / درهمًا | فلس / فلسات |
+| `kwd` | Kuwaiti Dinar | دينار / دينارًا | فلس / فلسات |
+| `bhd` | Bahraini Dinar | دينار / دينارًا | فلس / فلسات |
+| `iqd` | Iraqi Dinar | دينار / دينارًا | فلس / فلسات |
+| `lbp` | Lebanese Pound | ليرة | قرش / قروش |
+| `yer` | Yemeni Riyal | ريال / ريالًا | فلس / فلسات |
+| `jod` | Jordanian Dinar | دينار / دينارًا | قرش / قروش |
+| `usd` | US Dollar | دولار / دولاراً | سنت |
+| `sdg` | Sudanese Pound | قرش / قرشاً | قرش / قروش |
+| `mad` | Moroccan Dirham | درهم / درهمًا | سنتيم / سنتيمات |
+| `tnd` | Tunisian Dinar | دينار / دينارًا | مليم / مليمات |
+| `qar` | Qatari Riyal | ريال / ريالًا | درهم / دراهم |
+| `omr` | Omani Riyal | ريال / ريالًا | بيسة / بيسات |
+
+Add more with `Config::addCurrency()`.
+
+---
+
+## Large Numbers
+
+The package supports numbers up to trillions via PHP's `NumberFormatter` (ICU):
+
+```php
+Tafqeet::inArabicCurrency(1234567890, 'sar');
+// includes "مليار"
+
+Tafqeet::inArabicNumber(999999999999);
+// includes "مليار"
+```
+
+---
+
+## Backward Compatibility
+
+- `Tafqeet::inArabic($amount, $currency)` is fully preserved.
+- Laravel 5.5 through 11.x are supported.
+
+For the full changelog, see [CHANGELOG.md](CHANGELOG.md).
+
+---
+
+#### ☕️ Support: https://patreon.com/mohammadelkoumi
