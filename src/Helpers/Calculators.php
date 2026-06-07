@@ -179,15 +179,7 @@ trait Calculators
                             $this->tens[$arr[1]] . ' ' . $this->thousands[1199];
                     }
                 } else {
-                    if ($arr[1] == 0 and $arr[2] >= 1 and $arr[1] <= 10) {
-                        $thousands_lang = $this->thousands[1];
-                    } elseif ($arr[1] >= 1 and $arr[2] >= 1 and $arr[1] <= 9) {
-                        $thousands_lang = $this->thousands[1199];
-                    } elseif ($arr[1] >= 2) {
-                        $thousands_lang = $this->thousands[1199];
-                    }
-
-                    $thousands = $this->classC([$arr[0], $arr[1], $arr[2]], 3) . ' ' . $thousands_lang;
+                    $thousands = $this->classC([$arr[0], $arr[1], $arr[2]], 3) . ' ' . $this->thousands[1199];
                 }
             }
         } else {

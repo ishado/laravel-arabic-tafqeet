@@ -96,25 +96,4 @@ trait Digit
         1199 => "مليونًا",
     ];
 
-    /**
-     * Arabic billions — currently unused by the calculator (reserved for
-     * future 10-12 digit support).
-     */
-    protected array $billions = [
-        1    => "مليار",
-        2    => "ملياران",
-        39   => "مليارات",
-        1199 => "مليارًا",
-    ];
-
-    /**
-     * Arabic trillions — currently unused (reserved for future 13-15 digit
-     * support).
-     */
-    protected array $trillions = [
-        1    => "تريليون",
-        2    => "تريليونان",
-        39   => "تريليونات",
-        1199 => "تريليونًا",
-    ];
 }
