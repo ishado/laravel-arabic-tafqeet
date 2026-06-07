@@ -6,12 +6,12 @@ namespace Alkoumi\LaravelArabicTafqeet\Helpers;
 
 trait Validation
 {
-
-    public function initValidation()
+    public function initValidation(): self
     {
-        if(is_numeric($this->parsed_number))
+        if (is_numeric($this->parsed_number)) {
             return $this;
-        else
-            throw new \TypeError('The amount must be a numeric.');
+        }
+
+        throw new \TypeError('The amount must be a numeric.');
     }
 }

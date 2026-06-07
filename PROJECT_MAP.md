@@ -77,11 +77,11 @@ laravel-arabic-tafqeet/
 
 | التقنية | الإصدار الحالي | الحالة | ملاحظات |
 |---------|---------------|--------|---------|
-| PHP | غير محدد (يفترض ≥7.0) | ⚠️ خطر | لا يوجد قيد إصدار في composer.json |
-| Laravel | غير محدد (يفترض ≥5.5) | ⚠️ خطر | لا يوجد `require` |
-| ext-intl | أي إصدار | ⚠️ خطر | غير مصرح به كـ requirement |
+| PHP | ≥8.0 | ✅ | تم التحديث من 7.4 |
+| Laravel | ^7.0 \|\| ^8.0 \|\| ^9.0 \|\| ^10.0 \|\| ^11.0 | ✅ | مصرح به رسمياً |
+| ext-intl | * | ✅ | مصرح به كـ requirement |
 | Composer | أي إصدار | ✅ | PSR-4 autoloading |
-| PHPUnit | **غير موجود** | ❌ | لا يوجد أي اختبار |
+| PHPUnit | ^9.0 \|\| ^10.0 \|\| ^11.0 | ✅ | 76 اختباراً ناجحاً |
 
 ### حزم مقترحة للتحديث
 
@@ -226,12 +226,12 @@ Tafqeet (God Class)
 
 ### الديون التقنية
 
-1. ~~غياب الاختبارات (أكبر دين تقني)~~ ✅ تمت معالجته في المرحلة 1
-2. ~~عدم وجود `require` في composer.json~~ ✅ تمت معالجته في المرحلة 0
-3. Magic Numbers غير موثقة — مؤجل للمرحلة 2
-4. ~~كود debug متروك~~ ✅ تمت معالجته في المرحلة 0
-5. ~~عدم دعم PHP 8.1+ بشكل رسمي~~ ✅ تمت معالجته في المرحلة 0
-6. God Class يصعب اختباره — مؤجل للمرحلة 2
+1. ~~غياب الاختبارات~~ ✅ — 76 اختباراً في المرحلة 1
+2. ~~عدم وجود `require` في composer.json~~ ✅ — المرحلة 0
+3. Magic Numbers غير موثقة — ~~✅ موثقة الآن~~ (المرحلة 2)
+4. ~~كود debug متروك~~ ✅ — المرحلة 0
+5. ~~عدم دعم PHP 8.1+ بشكل رسمي~~ ✅ — المرحلتان 0 و2
+6. God Class — ~~✅ مخفف~~: تم استخراج Config، إضافة type hints، وتحسين encapsulation (المرحلة 2)
 
 ---
 
@@ -243,6 +243,21 @@ Tafqeet (God Class)
 
 ## [CHANGELOG]
 
+### المرحلة 2 — 2026-06-07 ✅ مكتملة (إعادة هيكلة داخلية آمنة)
+| # | التعديل | الملف | الحالة |
+|---|---------|------|--------|
+| 2.1 | استخراج `$config` إلى كلاس `Config` منفصل | `src/Config.php` (جديد) | ✅ |
+| 2.2 | `Tafqeet` يستخدم `Config::get()` في constructor | `src/Tafqeet.php` | ✅ |
+| 2.3 | تحويل `detectClass` من if-chain إلى صفيف mapping | `src/Helpers/App.php` | ✅ |
+| 2.4 | توثيق Magic Numbers (`39`, `1199`) في `Digit.php` | `src/Helpers/Digit.php` | ✅ |
+| 2.5 | تخزين `\NumberFormatter` مؤقتاً (static cache) | `src/Helpers/App.php` | ✅ |
+| 2.6 | إضافة type hints كاملة: `int\|float`, `string`, `self`, `array` | جميع ملفات `src/` | ✅ |
+| 2.7 | تغيير visibility: `$config`, `$after_comma_sum`, `$result_*` من `public` إلى `protected` | `src/Tafqeet.php` | ✅ |
+| 2.8 | رفع `"php"` constraint إلى `">=8.0"` | `composer.json` | ✅ |
+
+**نتائج الاختبارات:** 76/76 ✅  
+**تغييرات كاسرة محتملة:** `$config` و `$after_comma_sum` و `$result_before_comma` و `$result_after_comma` أصبحت `protected` — لمن يعتمد على هذه الخصائص مباشرة بدل `Tafqeet::inArabic()`.
+
 ### المرحلة 1 — 2026-06-07 ✅ مكتملة (76 اختباراً ناجحاً)
 | # | التعديل | الملف | الحالة |
 |---|---------|------|--------|
@@ -250,28 +265,19 @@ Tafqeet (God Class)
 | 1.2 | إنشاء `phpunit.xml` بتكوين PHPUnit 11 | `phpunit.xml` | ✅ |
 | 1.3 | إنشاء `tests/TestCase.php` | `tests/TestCase.php` | ✅ |
 | 1.4 | اختبارات انحدارية: 16 عملة × قيم اختبار | `tests/RegressionTest.php` | ✅ — 76 اختباراً |
-| 1.5 | اختبار حالات الحافة: صفر، أرقام كبيرة، دقة عشرية، مدخلات غير رقمية | `tests/RegressionTest.php` | ✅ |
-| 1.6 | اختبار القواعد النحوية: `is_main1_currency` — main1 vs main2 | `tests/RegressionTest.php` | ✅ |
+| 1.5 | اختبار حالات الحافة | `tests/RegressionTest.php` | ✅ |
+| 1.6 | اختبار القواعد النحوية: `is_main1_currency` | `tests/RegressionTest.php` | ✅ |
 | 1.7 | إضافة `.phpunit.cache` لـ `.gitignore` | `.gitignore` | ✅ |
 
-**نتائج الاختبارات:** 76/76 ✅ — جميع الاختبارات ناجحة
-**تحذيرات PHPUnit:** 27 (قادمة من الكود الأصلي، ستُعالج في المرحلة 2-3)
+### المرحلة 0 — 2026-06-07 ✅ مكتملة (إصلاحات حرجة)
 | # | التعديل | الملف | الحالة |
 |---|---------|------|--------|
-| 0.1 | إضافة `require` مع `php >=7.4` + `ext-intl` + `illuminate/support` | `composer.json` | ✅ |
+| 0.1 | إضافة `require` مع `php`, `ext-intl`, `illuminate/support` | `composer.json` | ✅ |
 | 0.2 | إضافة `require-dev` مع `phpunit` وإعداد `autoload-dev` | `composer.json` | ✅ |
-| 0.3 | إصلاح `$after_comma_sum` — تهيئة بـ `''` بدل `null` | `src/Tafqeet.php:136` | ✅ |
-| 0.4 | حذف الكود الميت: `getNameOfHala()` المعطلة | `src/Helpers/Digit.php` | ✅ |
-| 0.5 | حذف تعليقات `//dd(...)` المهملة | `src/Helpers/Calculators.php` | ✅ |
-| 0.6 | حذف تعليقات `//$classC`, `//$classE`, `//$million`, `//$thousands_lang` المهملة | `src/Helpers/Calculators.php` | ✅ |
-| 0.7 | حذف تعليق `//return $this->hundreds...` المهمل | `src/Helpers/Calculators.php:94` | ✅ |
-| 0.8 | حذف `test.php` من جذر المشروع | `test.php` | ✅ |
-| 0.9 | إضافة `.gitattributes` لاستبعاد ملفات التطوير | `.gitattributes` | ✅ |
-
-### ملاحظات ما بعد المرحلة 0
-- **لا يوجد أي تغيير كاسر** — جميع التغييرات آمنة ومتوافقة خلفياً 100%.
-- تحذير Lint متبقٍ: `$thousands_lang` في `src/Helpers/Calculators.php:212` متغير غير مهيأ في بعض المسارات — خلل مسبق، سيُعالج في المرحلة 2.
-- `$billions` و `$trillions` في `Digit.php` تبقى غير مستخدمة — سيُفعلّان في المرحلة 4.
+| 0.3 | إصلاح `$after_comma_sum` — تهيئة بـ `''` بدل `null` | `src/Tafqeet.php` | ✅ |
+| 0.4 | حذف الكود الميت: `getNameOfHala()`, تعليقات `dd()` | `src/Helpers/` | ✅ |
+| 0.5 | حذف `test.php` من جذر المشروع | `test.php` | ✅ |
+| 0.6 | إضافة `.gitattributes` | `.gitattributes` | ✅ |
 
 ---
 

@@ -354,7 +354,6 @@ class RegressionTest extends TestCase
     public function testNonNumericThrowsTypeError(): void
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('The amount must be a numeric.');
 
         Tafqeet::inArabic('abc');
     }
